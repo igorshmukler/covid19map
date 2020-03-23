@@ -6,8 +6,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+form {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+label {
+  font-size: 14px;
+}
+button {
+  width: 70px;
+  align-self: center;
+  margin-top: 10px;
+}
+form input {
+  width: 150px;
 }

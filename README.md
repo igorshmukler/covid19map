@@ -1,3 +1,10 @@
+### Configuration
+
+1. make Google credentials API key
+2. enable Google Maps, Places and Geocoding API
+3. add Google Maps API key to index.html and App.js
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
