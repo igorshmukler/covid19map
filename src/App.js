@@ -73,27 +73,45 @@ const AutocompleteControl = ({ ...props }) => {
         console.log("place id:", venue["place_id"]);
         geocodeByPlaceId(venue["place_id"])
           .then(results => {
-            let fullAddress
             const location = results[0]["geometry"].location;
             const addressFromGeocode = results[0]["address_components"];
             console.log("address array:", addressFromGeocode);
-            if (addressFromGeocode.length === 7) {
-              const house_number = addressFromGeocode[0]["short_name"];
-              const street = addressFromGeocode[1]["short_name"];
-              const city = addressFromGeocode[3]["short_name"];
-              const state = addressFromGeocode[4]["short_name"];
-              const country = addressFromGeocode[5]["short_name"];
-              const zip = addressFromGeocode[6]["short_name"];
-              fullAddress = `${house_number} ${street}\n${city}, ${state} ${zip}\n${country}`;
-              console.log("address:", fullAddress);
-            } else if (addressFromGeocode.length === 5) {
-              const city = addressFromGeocode[0]["short_name"];
-              const state = addressFromGeocode[2]["short_name"];
-              const country = addressFromGeocode[3]["short_name"];
-              const zip = addressFromGeocode[4]["short_name"];
-              fullAddress = `${city}, ${state} ${zip}\n${country}`;
-              console.log("address:", fullAddress);
-            }
+            const house_number = addressFromGeocode.filter(
+              entry => entry.types.indexOf('street_number') !== -1
+            ).length
+              ? addressFromGeocode.filter(
+                  entry => entry.types.indexOf('street_number') !== -1
+                )[0]['short_name']
+              : ''
+            const street = addressFromGeocode.filter(
+              entry => entry.types.indexOf('route') !== -1
+            ).length
+              ? addressFromGeocode.filter(
+                  entry => entry.types.indexOf('route') !== -1
+                )[0]['short_name']
+              : ''
+            const city = addressFromGeocode.filter(
+              entry => entry.types.indexOf('locality') !== -1
+            ).length
+              ? addressFromGeocode.filter(
+                  entry => entry.types.indexOf('locality') !== -1
+                )[0]['short_name']
+              : addressFromGeocode.filter(
+                  entry => entry.types.indexOf('sublocality_level_1') !== -1
+                )[0]['short_name']
+            const state = addressFromGeocode.filter(
+              entry =>
+                entry.types.indexOf('administrative_area_level_1') !== -1
+            )[0]['short_name']
+            const country = addressFromGeocode.filter(
+              entry => entry.types.indexOf('country') !== -1
+            )[0]['short_name']
+            const zip = addressFromGeocode.filter(
+              entry => entry.types.indexOf('postal_code') !== -1
+            )[0]['short_name']
+            const fullAddress = `${house_number} ${street}\n${city}, ${state} ${zip}\n${country}`
+
+            console.log("address:", fullAddress);
             addressHelpers.setValue({
               address: fullAddress,
               coordinates: { lat: location.lat(), lng: location.lng() }

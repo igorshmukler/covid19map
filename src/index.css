@@ -17,7 +17,7 @@ label {
 button {
   width: 70px;
   align-self: center;
-  margin-top: 10px;
+  margin: 10px 0 15px;
 }
 form input {
   width: 150px;
