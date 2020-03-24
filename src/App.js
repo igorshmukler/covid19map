@@ -6,8 +6,6 @@ import { Form, Formik, useField } from "formik";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import moment from "moment";
-
 import GooglePlacesAutocomplete, {
   geocodeByPlaceId
 } from "react-google-places-autocomplete";
@@ -67,14 +65,15 @@ const DateControl = ({ ...props }) => {
 };
 
 const AutocompleteControl = ({ ...props }) => {
+  // eslint-disable-next-line
   const [address, meta, addressHelpers] = useField("address");
-  console.log("address:", address.value);
   return (
     <GooglePlacesAutocomplete
       onSelect={venue => {
         console.log("place id:", venue["place_id"]);
         geocodeByPlaceId(venue["place_id"])
           .then(results => {
+            let fullAddress
             const location = results[0]["geometry"].location;
             const addressFromGeocode = results[0]["address_components"];
             console.log("address array:", addressFromGeocode);
@@ -85,25 +84,21 @@ const AutocompleteControl = ({ ...props }) => {
               const state = addressFromGeocode[4]["short_name"];
               const country = addressFromGeocode[5]["short_name"];
               const zip = addressFromGeocode[6]["short_name"];
-              const fullAddress = `${house_number} ${street}\n${city}, ${state} ${zip}\n${country}`;
+              fullAddress = `${house_number} ${street}\n${city}, ${state} ${zip}\n${country}`;
               console.log("address:", fullAddress);
-              addressHelpers.setValue({
-                address: fullAddress,
-                coordinates: { lat: location.lat(), lng: location.lng() }
-              });
             } else if (addressFromGeocode.length === 5) {
               const city = addressFromGeocode[0]["short_name"];
               const state = addressFromGeocode[2]["short_name"];
               const country = addressFromGeocode[3]["short_name"];
               const zip = addressFromGeocode[4]["short_name"];
-              const fullAddress = `${city}, ${state} ${zip}\n${country}`;
+              fullAddress = `${city}, ${state} ${zip}\n${country}`;
               console.log("address:", fullAddress);
-              addressHelpers.setValue({
-                address: fullAddress,
-                coordinates: { lat: location.lat(), lng: location.lng() }
-              });
             }
-          })
+            addressHelpers.setValue({
+              address: fullAddress,
+              coordinates: { lat: location.lat(), lng: location.lng() }
+            });
+        })
           .catch(error => console.error(error));
       }}
       renderInput={props => (
@@ -124,7 +119,6 @@ function App() {
   const [infections, setInfections] = useState([]);
 
   // eslint-disable-next-line
-  console.log("infections:", infections);
   return (
     <div className="App">
       <header className="App-header">
@@ -147,7 +141,7 @@ function App() {
                   coordinates: values["address"].coordinates
                 }
               ]);
-            }, 1000);
+            }, 100);
           }}
         >
           {props => {
@@ -160,13 +154,13 @@ function App() {
             );
           }}
         </Formik>
-        {infections &&
+        {/* infections &&
           infections.map((entry, k) => (
             <div key={k}>
               address: {entry["address"]}, date:{" "}
               {moment(entry["date"]).format()}
             </div>
-          ))}
+          ))*/}
         <div style={{ width: "600px", height: "400px" }}>
           <Map
             googleMapURL="http://maps.googleapis.com/maps/api/js?key=KEY"
